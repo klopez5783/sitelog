@@ -56,17 +56,6 @@ const DEMO_REPORTS = {
       submittedBy: "Mike R.",
       submittedAt: new Date().toISOString(),
     },
-    {
-      id: "report-2",
-      date: "2026-02-11",
-      workPerformed: "Demolished existing countertops and removed flooring.",
-      crewOnSite: "Mike R., Dave S., Carlos M.",
-      weather: "Cloudy, 38°F",
-      issues: "Found water damage behind sink area — reported to client.",
-      photos: [],
-      submittedBy: "Dave S.",
-      submittedAt: new Date().toISOString(),
-    },
   ],
   "demo-2": [
     {
@@ -112,23 +101,22 @@ const DEMO_NOTES = {
 };
 
 export const useJobStore = create((set) => ({
+  // Auth
+  user: null,
+  companyId: null,
+  setUser: (user) => set({ user }),
+  setCompanyId: (companyId) => set({ companyId }),
+
+  // Jobs
   jobs: [],
   activeJob: null,
-  isDemo: false,
-  demoReports: DEMO_REPORTS,
-  demoNotes: DEMO_NOTES,
-
   setJobs: (jobs) => set({ jobs }),
   setActiveJob: (job) => set({ activeJob: job }),
 
-  enterDemo: () => set({
-    isDemo: true,
-    jobs: DEMO_JOBS,
-  }),
-
-  exitDemo: () => set({
-    isDemo: false,
-    jobs: [],
-    activeJob: null,
-  }),
+  // Demo
+  isDemo: false,
+  demoReports: DEMO_REPORTS,
+  demoNotes: DEMO_NOTES,
+  enterDemo: () => set({ isDemo: true, jobs: DEMO_JOBS }),
+  exitDemo: () => set({ isDemo: false, jobs: [], activeJob: null, user: null, companyId: null }),
 }));

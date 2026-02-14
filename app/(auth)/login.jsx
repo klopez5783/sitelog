@@ -7,13 +7,11 @@ import {
   Platform,
   ScrollView,
 } from "react-native";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { doc, getDoc } from "firebase/firestore";
-import { auth, db } from "../../lib/firebase";
 import { useRouter } from "expo-router";
-import {useJobStore} from "../../store/useJobsStore";
+import {useJobStore} from "../../store/useJobStore";
 import Input from "../../components/ui/Input";
 import Button from "../../components/ui/Button";
+import { signIn } from "../../lib/useAuth";
 
 export default function LoginScreen() {
   const router = useRouter();
@@ -23,28 +21,25 @@ export default function LoginScreen() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const handleLogin = async () => {
-    if (!email || !password) {
-      setError("Please enter your email and password.");
-      return;
-    }
-    setLoading(true);
-    setError("");
-    try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      const userDoc = await getDoc(doc(db, "users", userCredential.user.uid));
-      if (userDoc.exists()) {
-        const userData = userDoc.data();
-        setUser({ uid: userCredential.user.uid, ...userData });
-        setCompanyId(userData.companyId);
-      }
-      router.replace("/(tabs)");
-    } catch (e) {
-      setError("Invalid email or password.");
-    } finally {
-      setLoading(false);
-    }
-  };
+ const handleLogin = async () => {
+  if (!email || !password) {
+    setError("Please enter your email and password.");
+    return;
+  }
+  setLoading(true);
+  setError("");
+  try {
+    const userData = await signIn(email, password);
+    setUser(userData);
+    setCompanyId(userData.companyId);
+    router.replace("/(tabs)");
+  } catch (e) {
+    setError("Invalid email or password.");
+    console.log("Login error:", e);
+  } finally {
+    setLoading(false);
+  }
+};
 
   const handleDemo = () => {
     enterDemo();
@@ -110,7 +105,7 @@ export default function LoginScreen() {
           {/* Sign Up */}
           <TouchableOpacity
             className="items-center mt-8"
-            onPress={() => router.push("/(auth)/signup")}
+            onPress={() => router.replace("/(auth)/signup")}
           >
             <Text className="text-muted text-sm">
               Don't have an account?{" "}

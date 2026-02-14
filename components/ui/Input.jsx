@@ -19,7 +19,7 @@ export default function Input({
         </Text>
       )}
       <TextInput
-        className="bg-surface border border-border rounded-2xl px-4 py-4 text-title text-base"
+        className="bg-surface border border-border rounded-2xl px-4 text-title text-base"
         placeholder={placeholder}
         placeholderTextColor="#9CA3AF"
         value={value}
@@ -29,7 +29,13 @@ export default function Input({
         autoCapitalize={autoCapitalize}
         multiline={multiline}
         numberOfLines={numberOfLines}
-        style={multiline ? { minHeight: 100, textAlignVertical: "top" } : {}}
+        style={{
+          height: multiline ? undefined : 52,
+          minHeight: multiline ? 100 : undefined,
+          textAlignVertical: multiline ? "top" : "center",
+          paddingTop: multiline ? 14 : 0,
+          paddingBottom: multiline ? 14 : 0,
+        }}
       />
     </View>
   );

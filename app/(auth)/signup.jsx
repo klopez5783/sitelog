@@ -2,18 +2,15 @@ import { useState } from "react";
 import {
   View,
   Text,
-  TextInput,
   TouchableOpacity,
-  ActivityIndicator,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
 } from "react-native";
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { doc, setDoc, serverTimestamp } from "firebase/firestore";
-import { auth, db } from "../../lib/firebase";
 import { useRouter } from "expo-router";
-import {useJobStore} from "../../store/useJobsStore";
+import { useJobStore } from "../../store/useJobStore";
+import { signUp } from "../../lib/useAuth";
+import Input from "../../components/ui/Input";
 
 export default function SignUpScreen() {
   const router = useRouter();
@@ -36,65 +33,41 @@ export default function SignUpScreen() {
       .substring(0, 30);
   };
 
-  const handleSignUp = async () => {
-    setError("");
+ const handleSignUp = async () => {
+  setError("");
 
-    if (!name || !companyName || !email || !password || !confirmPassword) {
-      setError("Please fill in all fields.");
-      return;
+  if (!name || !companyName || !email || !password || !confirmPassword) {
+    setError("Please fill in all fields.");
+    return;
+  }
+  if (password.length < 6) {
+    setError("Password must be at least 6 characters.");
+    return;
+  }
+  if (password !== confirmPassword) {
+    setError("Passwords do not match.");
+    return;
+  }
+
+  setLoading(true);
+
+  try {
+    const userData = await signUp(name, companyName, email, password);
+    setUser(userData);
+    setCompanyId(userData.companyId);
+    router.replace("/(tabs)");
+  } catch (e) {
+    if (e.code === "auth/email-already-in-use") {
+      setError("An account with this email already exists.");
+    } else if (e.code === "auth/invalid-email") {
+      setError("Please enter a valid email address.");
+    } else {
+      setError("Something went wrong. Please try again.");
     }
-    if (password.length < 6) {
-      setError("Password must be at least 6 characters.");
-      return;
-    }
-    if (password !== confirmPassword) {
-      setError("Passwords do not match.");
-      return;
-    }
-
-    setLoading(true);
-
-    try {
-      // 1 — Create Firebase Auth user
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      const uid = userCredential.user.uid;
-
-      // 2 — Generate a companyId from the company name
-      const companyId = generateCompanyId(companyName) + "-" + uid.substring(0, 6);
-
-      // 3 — Create company doc
-      await setDoc(doc(db, "companies", companyId), {
-        name: companyName,
-        ownerId: uid,
-        createdAt: serverTimestamp(),
-      });
-
-      // 4 — Create user doc
-      await setDoc(doc(db, "users", uid), {
-        name,
-        email,
-        companyId,
-        role: "admin",
-        createdAt: serverTimestamp(),
-      });
-
-      // 5 — Update Zustand store
-      setUser({ uid, email, name, companyId, role: "admin" });
-      setCompanyId(companyId);
-
-      router.replace("/(tabs)");
-    } catch (e) {
-      if (e.code === "auth/email-already-in-use") {
-        setError("An account with this email already exists.");
-      } else if (e.code === "auth/invalid-email") {
-        setError("Please enter a valid email address.");
-      } else {
-        setError("Something went wrong. Please try again.");
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <KeyboardAvoidingView
@@ -106,7 +79,6 @@ export default function SignUpScreen() {
         keyboardShouldPersistTaps="handled"
       >
         <View className="flex-1 justify-center px-6 py-12">
-
           {/* Header */}
           <View className="mb-10">
             <Text className="text-primary text-4xl font-bold">SiteLog</Text>
@@ -117,8 +89,8 @@ export default function SignUpScreen() {
 
           {/* Name */}
           <Text className="text-muted text-sm mb-1 ml-1">Your Name</Text>
-          <TextInput
-            className="bg-surface text-white rounded-xl px-4 py-4 mb-4 text-base"
+          <Input
+            className="bg-surface text-black rounded-xl px-4 py-4 mb-4 text-base"
             placeholder="John Smith"
             placeholderTextColor="#6B7280"
             autoCapitalize="words"
@@ -128,8 +100,8 @@ export default function SignUpScreen() {
 
           {/* Company Name */}
           <Text className="text-muted text-sm mb-1 ml-1">Company Name</Text>
-          <TextInput
-            className="bg-surface text-white rounded-xl px-4 py-4 mb-4 text-base"
+          <Input
+            className="bg-surface text-black rounded-xl px-4 py-4 mb-4 text-base"
             placeholder="Smith Construction LLC"
             placeholderTextColor="#6B7280"
             autoCapitalize="words"
@@ -139,8 +111,8 @@ export default function SignUpScreen() {
 
           {/* Email */}
           <Text className="text-muted text-sm mb-1 ml-1">Email</Text>
-          <TextInput
-            className="bg-surface text-white rounded-xl px-4 py-4 mb-4 text-base"
+          <Input
+            className="bg-surface text-black rounded-xl px-4 py-4 mb-4 text-base"
             placeholder="john@smithconstruction.com"
             placeholderTextColor="#6B7280"
             keyboardType="email-address"
@@ -151,8 +123,8 @@ export default function SignUpScreen() {
 
           {/* Password */}
           <Text className="text-muted text-sm mb-1 ml-1">Password</Text>
-          <TextInput
-            className="bg-surface text-white rounded-xl px-4 py-4 mb-4 text-base"
+          <Input
+            className="bg-surface text-black rounded-xl px-4 py-4 mb-4 text-base"
             placeholder="At least 6 characters"
             placeholderTextColor="#6B7280"
             secureTextEntry
@@ -162,8 +134,8 @@ export default function SignUpScreen() {
 
           {/* Confirm Password */}
           <Text className="text-muted text-sm mb-1 ml-1">Confirm Password</Text>
-          <TextInput
-            className="bg-surface text-white rounded-xl px-4 py-4 mb-4 text-base"
+          <Input
+            className="bg-surface text-black rounded-xl px-4 py-4 mb-4 text-base"
             placeholder="Re-enter your password"
             placeholderTextColor="#6B7280"
             secureTextEntry
@@ -185,7 +157,7 @@ export default function SignUpScreen() {
             {loading ? (
               <ActivityIndicator color="#fff" />
             ) : (
-              <Text className="text-white font-bold text-base">
+              <Text className="text-black font-bold text-base">
                 Create Account
               </Text>
             )}
@@ -201,7 +173,6 @@ export default function SignUpScreen() {
               <Text className="text-primary font-semibold">Sign In</Text>
             </Text>
           </TouchableOpacity>
-
         </View>
       </ScrollView>
     </KeyboardAvoidingView>
