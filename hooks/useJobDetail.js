@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "expo-router";
 import { Alert } from "react-native";
 import { useJobStore } from "../store/useJobStore";
-import { getJob, completeJob, getReports, getNotes, getDocuments } from "../lib/firestore";
+import { getJob, completeJob, updateJob, getReports, getNotes, getDocuments } from "../lib/firestore";
 
 export function useJobDetail(id) {
   const router = useRouter();
@@ -15,6 +15,7 @@ export function useJobDetail(id) {
   const [activeTab, setActiveTab] = useState("Overview");
   const [loading, setLoading] = useState(true);
   const [completing, setCompleting] = useState(false);
+  const [reactivating, setReactivating] = useState(false);
 
   const fetchJobData = async () => {
     try {
@@ -46,7 +47,7 @@ export function useJobDetail(id) {
   const handleComplete = () => {
     Alert.alert(
       "Complete Job",
-      "Are you sure you want to mark this job as completed?",
+      "Are you sure you want to mark this job as completed? You will need to reactivate it to make edits.",
       [
         { text: "Cancel", style: "cancel" },
         {
@@ -73,6 +74,41 @@ export function useJobDetail(id) {
     );
   };
 
+  const handleReactivate = () => {
+    Alert.alert(
+      "Reactivate Job",
+      "This will set the job back to active so it can be edited. Continue?",
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Reactivate",
+          onPress: async () => {
+            setReactivating(true);
+            try {
+              if (!isDemo) {
+                await updateJob(companyId, id, {
+                  status: "active",
+                  completedDate: null,
+                });
+              }
+              const updatedJob = {
+                ...job,
+                status: "active",
+                completedDate: null,
+              };
+              setJob(updatedJob);
+              setJobs(jobs.map((j) => (j.id === id ? updatedJob : j)));
+            } catch (e) {
+              console.log("Error reactivating job:", e);
+            } finally {
+              setReactivating(false);
+            }
+          },
+        },
+      ]
+    );
+  };
+
   useEffect(() => {
     fetchJobData();
   }, [id]);
@@ -86,7 +122,9 @@ export function useJobDetail(id) {
     setActiveTab,
     loading,
     completing,
+    reactivating,
     handleComplete,
+    handleReactivate,
     refetch: fetchJobData,
   };
 }

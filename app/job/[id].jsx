@@ -1,6 +1,6 @@
 import { View, Text, TouchableOpacity, ActivityIndicator } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { useJobDetail } from "../../hooks/useJobDeatils";
+import { useJobDetail } from "../../hooks/useJobDetail";
 import Screen from "../../components/ui/Screen";
 import Badge from "../../components/ui/Badge";
 import TabOverview from "../../components/jobs/detail/TabOverview";
@@ -14,7 +14,19 @@ export default function JobDetail() {
   const { id } = useLocalSearchParams();
   const router = useRouter();
   const detail = useJobDetail(id);
-  const { job, reports, documents, notes, activeTab, setActiveTab, loading, completing, handleComplete } = detail;
+  const {
+    job,
+    reports,
+    documents,
+    notes,
+    activeTab,
+    setActiveTab,
+    loading,
+    completing,
+    reactivating,
+    handleComplete,
+    handleReactivate,
+  } = detail;
 
   if (loading) {
     return (
@@ -40,6 +52,8 @@ export default function JobDetail() {
     );
   }
 
+  const isActive = job.status === "active";
+
   return (
     <Screen>
       {/* Header */}
@@ -48,15 +62,42 @@ export default function JobDetail() {
           <TouchableOpacity onPress={() => router.back()} className="mr-3">
             <Text className="text-primary text-2xl">←</Text>
           </TouchableOpacity>
+
           <View className="flex-1">
             <Text className="text-title font-bold text-lg" numberOfLines={1}>
               {job.name}
             </Text>
             <Text className="text-muted text-xs mt-0.5">{job.clientName}</Text>
           </View>
+
+          {/* Active → Show Edit button */}
+          {isActive && (
+            <TouchableOpacity
+              onPress={() => router.push(`/job/edit/${id}`)}
+              className="mr-3 bg-background border border-border rounded-xl px-3 py-1.5"
+            >
+              <Text className="text-title text-sm font-semibold">Edit</Text>
+            </TouchableOpacity>
+          )}
+
+          {/* Completed → Show Reactivate button */}
+          {!isActive && (
+            <TouchableOpacity
+              onPress={handleReactivate}
+              disabled={reactivating}
+              className="mr-3 bg-orange-100 border border-orange-200 rounded-xl px-3 py-1.5"
+            >
+              {reactivating ? (
+                <ActivityIndicator size="small" color="#F97316" />
+              ) : (
+                <Text className="text-primary text-sm font-semibold">Reactivate</Text>
+              )}
+            </TouchableOpacity>
+          )}
+
           <Badge
-            label={job.status === "active" ? "Active" : "Completed"}
-            variant={job.status === "active" ? "active" : "completed"}
+            label={isActive ? "Active" : "Completed"}
+            variant={isActive ? "active" : "completed"}
           />
         </View>
       </View>
@@ -86,15 +127,9 @@ export default function JobDetail() {
       {activeTab === "Overview" && (
         <TabOverview job={job} handleComplete={handleComplete} completing={completing} />
       )}
-      {activeTab === "Reports" && (
-        <TabReports reports={reports} jobId={id} />
-      )}
-      {activeTab === "Documents" && (
-        <TabDocuments documents={documents} jobId={id} />
-      )}
-      {activeTab === "Notes" && (
-        <TabNotes notes={notes} jobId={id} />
-      )}
+      {activeTab === "Reports" && <TabReports reports={reports} jobId={id} />}
+      {activeTab === "Documents" && <TabDocuments documents={documents} jobId={id} />}
+      {activeTab === "Notes" && <TabNotes notes={notes} jobId={id} />}
     </Screen>
   );
 }

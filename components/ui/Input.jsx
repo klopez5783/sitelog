@@ -1,4 +1,4 @@
-import { View, Text, TextInput } from "react-native";
+import { View, Text, TextInput, Platform } from "react-native";
 
 export default function Input({
   label,
@@ -9,18 +9,18 @@ export default function Input({
   keyboardType = "default",
   autoCapitalize = "sentences",
   multiline = false,
-  numberOfLines = 1,
-   returnKeyType = "done",
+  returnKeyType = "done",
+  onSubmitEditing,
 }) {
   return (
     <View className="mb-4">
-      {label && (
+      {label ? (
         <Text className="text-body text-sm font-semibold mb-1 ml-1">
           {label}
         </Text>
-      )}
+      ) : null}
       <TextInput
-        className="bg-surface border border-border rounded-2xl px-4 text-title text-base"
+        className="bg-surface border justify-center-safe border-border rounded-2xl px-4 text-title text-base"
         placeholder={placeholder}
         placeholderTextColor="#9CA3AF"
         value={value}
@@ -29,14 +29,15 @@ export default function Input({
         keyboardType={keyboardType}
         autoCapitalize={autoCapitalize}
         multiline={multiline}
-        numberOfLines={numberOfLines}
         returnKeyType={multiline ? "default" : returnKeyType}
+        onSubmitEditing={onSubmitEditing}
+        blurOnSubmit={!multiline}
         style={{
-          height: multiline ? undefined : 52,
+          height: multiline ? undefined : 50,
           minHeight: multiline ? 100 : undefined,
           textAlignVertical: multiline ? "top" : "center",
-          paddingTop: multiline ? 14 : 0,
-          paddingBottom: multiline ? 14 : 0,
+          includeFontPadding: false,
+          lineHeight: 18,
         }}
       />
     </View>
