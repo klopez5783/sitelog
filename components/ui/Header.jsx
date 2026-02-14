@@ -1,5 +1,6 @@
 import { View, Text, TouchableOpacity } from "react-native";
 import { useRouter } from "expo-router";
+import { TouchableOpacity } from "react-native";
 
 export default function Header({ title, showBack = false, right = null }) {
   const router = useRouter();

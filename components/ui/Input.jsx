@@ -10,6 +10,7 @@ export default function Input({
   autoCapitalize = "sentences",
   multiline = false,
   numberOfLines = 1,
+   returnKeyType = "done",
 }) {
   return (
     <View className="mb-4">
@@ -29,6 +30,7 @@ export default function Input({
         autoCapitalize={autoCapitalize}
         multiline={multiline}
         numberOfLines={numberOfLines}
+        returnKeyType={multiline ? "default" : returnKeyType}
         style={{
           height: multiline ? undefined : 52,
           minHeight: multiline ? 100 : undefined,
