@@ -11,8 +11,6 @@ export default function Input({
   multiline = false,
   returnKeyType = "done",
   onSubmitEditing,
-  onFocus,
-  maxLength
 }) {
   return (
     <View className="mb-4">
@@ -34,8 +32,6 @@ export default function Input({
         returnKeyType={multiline ? "default" : returnKeyType}
         onSubmitEditing={onSubmitEditing}
         blurOnSubmit={!multiline}
-        onFocus={onFocus}
-        maxLength={maxLength}
         style={{
           height: multiline ? undefined : 50,
           minHeight: multiline ? 100 : undefined,
