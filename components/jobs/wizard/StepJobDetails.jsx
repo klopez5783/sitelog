@@ -1,4 +1,5 @@
-import { View, Text } from "react-native";
+import { useRef } from "react";
+import { View, Text, ScrollView } from "react-native";
 import Input from "../../ui/Input";
 
 export default function StepJobDetails({
@@ -7,8 +8,22 @@ export default function StepJobDetails({
   description,
   setDescription,
 }) {
+  const scrollRef = useRef(null);
+
+  const handleDescriptionFocus = () => {
+    setTimeout(() => {
+      scrollRef.current?.scrollToEnd({ animated: true });
+    }, 300);
+  };
+
   return (
-    <View>
+    <ScrollView
+      ref={scrollRef}
+      className="flex-1"
+      keyboardShouldPersistTaps="handled"
+      showsVerticalScrollIndicator={false}
+      contentContainerStyle={{ paddingHorizontal: 10, paddingBottom: 10 }}
+    >
       <View className="items-center mb-6">
         <View className="w-16 h-16 bg-orange-100 rounded-full items-center justify-center mb-3">
           <Text className="text-3xl">🏗️</Text>
@@ -33,7 +48,8 @@ export default function StepJobDetails({
         placeholder="Describe the scope of work..."
         multiline
         returnKeyType="done"
+        onFocus={handleDescriptionFocus}
       />
-    </View>
+    </ScrollView>
   );
 }
