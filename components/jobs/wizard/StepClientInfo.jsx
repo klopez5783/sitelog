@@ -2,7 +2,6 @@ import { View, Text } from "react-native";
 import React from "react";
 import Input from "../../ui/Input";
 
-
 export default function StepClientInfo({
   clientName,
   setClientName,
@@ -14,6 +13,21 @@ export default function StepClientInfo({
   estimatedCompletion,
   crew,
 }) {
+  const formatPhoneNumber = (value) => {
+    const cleaned = value.replace(/\D/g, "").slice(0, 10);
+
+    const match = cleaned.match(/^(\d{0,3})(\d{0,3})(\d{0,4})$/);
+
+    if (!match) return value;
+
+    const [, area, middle, last] = match;
+
+    if (last) return `(${area}) ${middle}-${last}`;
+    if (middle) return `(${area}) ${middle}`;
+    if (area) return `(${area}`;
+    return "";
+  };
+
   return (
     <View>
       <View className="items-center mb-6">
@@ -33,12 +47,18 @@ export default function StepClientInfo({
         placeholder="Mark Johnson"
         autoCapitalize="words"
       />
+
       <Input
         label="Client Phone"
-        value={clientPhone}
-        onChangeText={setClientPhone}
+        value={formatPhoneNumber(clientPhone)}
+        onChangeText={(text) => {
+          const digits = text.replace(/\D/g, "").slice(0, 10);
+          setClientPhone(digits);
+        }}
         placeholder="(614) 555-0123"
         keyboardType="phone-pad"
+        textContentType="telephoneNumber"
+        autoComplete="tel"
       />
 
       {/* Summary */}

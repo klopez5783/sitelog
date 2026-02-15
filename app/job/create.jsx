@@ -8,6 +8,7 @@ import StepDatesAndCrew from "../../components/jobs/wizard/StepDatesAndCrew";
 import StepClientInfo from "../../components/jobs/wizard/StepClientInfo";
 import WizardNavigation from "../../components/jobs/wizard/WizardNavigation";
 import { useJobWizard } from "../../components/jobs/wizard/useJobWizard";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 export default function CreateJob() {
   const wizard = useJobWizard();
@@ -16,10 +17,21 @@ export default function CreateJob() {
     <Screen>
       <Header />
       <WizardProgressBar currentStep={wizard.currentStep} />
-      {wizard.currentStep === 1 && <StepJobDetails {...wizard} />}
-      {wizard.currentStep === 2 && <StepLocation {...wizard} />}
-      {wizard.currentStep === 3 && <StepDatesAndCrew {...wizard} />}
-      {wizard.currentStep === 4 && <StepClientInfo {...wizard} />}
+      <KeyboardAwareScrollView
+        enableOnAndroid
+        extraScrollHeight={10}
+        keyboardShouldPersistTaps="handled"
+        contentContainerStyle={{
+          paddingHorizontal: 16,
+          paddingBottom: 10,
+          flexGrow: 1,
+        }}
+      >
+        {wizard.currentStep === 1 && <StepJobDetails {...wizard} />}
+        {wizard.currentStep === 2 && <StepLocation {...wizard} />}
+        {wizard.currentStep === 3 && <StepDatesAndCrew {...wizard} />}
+        {wizard.currentStep === 4 && <StepClientInfo {...wizard} />}
+      </KeyboardAwareScrollView>
       <WizardNavigation wizard={wizard} />
     </Screen>
   );

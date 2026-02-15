@@ -49,13 +49,6 @@ export default function StepLocation({
 
   return (
     <>
-      <ScrollView
-        ref={scrollRef}
-        className="flex-1"
-        keyboardShouldPersistTaps="handled"
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 200 }}
-      >
         {/* Icon & Title */}
         <View className="items-center mb-6">
           <View className="w-16 h-16 bg-blue-100 rounded-full items-center justify-center mb-3">
@@ -117,7 +110,6 @@ export default function StepLocation({
           maxLength={5}
           onFocus={handleZipFocus}
         />
-      </ScrollView>
 
       {/* State Picker Modal */}
       <Modal

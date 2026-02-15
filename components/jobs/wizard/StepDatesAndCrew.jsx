@@ -14,28 +14,9 @@ export default function StepDatesAndCrew({
   addCrewMember,
   removeCrewMember,
 }) {
-  const scrollRef = useRef(null);
-
-  const handleEstimatedFocus = () => {
-    setTimeout(() => {
-      scrollRef.current?.scrollTo({ y: 150, animated: true });
-    }, 300);
-  };
-
-  const handleCrewFocus = () => {
-    setTimeout(() => {
-      scrollRef.current?.scrollToEnd({ animated: true });
-    }, 300);
-  };
 
   return (
-    <ScrollView
-      ref={scrollRef}
-      className="flex-1"
-      keyboardShouldPersistTaps="handled"
-      showsVerticalScrollIndicator={false}
-      contentContainerStyle={{ paddingHorizontal: 10, paddingBottom: 200 }}
-    >
+    <>
       <View className="items-center mb-6">
         <View className="w-16 h-16 bg-green-100 rounded-full items-center justify-center mb-3">
           <Text className="text-3xl">📅</Text>
@@ -67,7 +48,6 @@ export default function StepDatesAndCrew({
             placeholder="Add crew member name"
             autoCapitalize="words"
             returnKeyType="done"
-            onFocus={handleCrewFocus}
             onSubmitEditing={addCrewMember}
           />
         </View>
@@ -98,6 +78,6 @@ export default function StepDatesAndCrew({
       {crew.length > 0 && (
         <Text className="text-muted text-xs mb-2">Tap a name to remove</Text>
       )}
-    </ScrollView>
+    </>
   );
 }
