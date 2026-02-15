@@ -159,26 +159,37 @@ export function useJobWizard() {
     handleSubmit,
 
     // Step 1
-    name, setName,
-    description, setDescription,
+    name,
+    setName,
+    description,
+    setDescription,
 
     // Step 2
-    streetAddress, setStreetAddress,
-    city, setCity,
-    state, setState,
-    zipCode, setZipCode,
+    streetAddress,
+    setStreetAddress,
+    city,
+    setCity,
+    state,
+    setState,
+    zipCode,
+    setZipCode,
 
     // Step 3
-    startDate, setStartDate,
-    estimatedCompletion, setEstimatedCompletion,
-    crewInput, setCrewInput,
+    startDate,
+    setStartDate,
+    estimatedCompletion,
+    setEstimatedCompletion,
+    crewInput,
+    setCrewInput,
     crew,
     addCrewMember,
     removeCrewMember,
 
     // Step 4
-    clientName, setClientName,
-    clientPhone, setClientPhone,
+    clientName,
+    setClientName,
+    clientPhone,
+    setClientPhone,
 
     // Helpers
     getFullAddress,
