@@ -19,19 +19,30 @@ export default function TabNotes({ notes, jobId }) {
         <EmptyState
           emoji="📝"
           title="No notes yet"
-          subtitle="Add notes, reminders, or updates."
+          subtitle="Add notes about the job, safety concerns, or client requests."
         />
       ) : (
         notes.map((note) => (
-          <Card key={note.id}>
-            <Text className="text-body text-sm leading-relaxed">{note.content}</Text>
-            <View className="flex-row justify-between mt-3 border-t border-border pt-2">
-              <Text className="text-muted text-xs">{note.createdBy}</Text>
-              <Text className="text-muted text-xs">
-                {new Date(note.createdAt?.toDate?.() || note.createdAt).toLocaleDateString()}
+          <TouchableOpacity
+            key={note.id}
+            onPress={() => router.push(`/job/note/${note.id}?jobId=${jobId}`)}
+            activeOpacity={0.7}
+          >
+            <Card>
+              <View className="flex-row justify-between items-start mb-2">
+                <Text className="text-muted text-xs">{note.createdBy}</Text>
+                <Text className="text-muted text-xs">
+                  {new Date(note.createdAt?.toDate?.() || note.createdAt).toLocaleDateString()}
+                </Text>
+              </View>
+              <Text className="text-title text-sm leading-relaxed" numberOfLines={4}>
+                {note.content}
               </Text>
-            </View>
-          </Card>
+              <View className="flex-row justify-end border-t border-border pt-2 mt-2">
+                <Text className="text-primary text-xs font-semibold">View →</Text>
+              </View>
+            </Card>
+          </TouchableOpacity>
         ))
       )}
       <View style={{ height: 40 }} />
