@@ -4,6 +4,7 @@ export default function DocumentLayout() {
   return (
     <Stack screenOptions={{ headerShown: false }}>
       <Stack.Screen name="add" />
+      <Stack.Screen name="[documentId]" />
     </Stack>
   );
 }
