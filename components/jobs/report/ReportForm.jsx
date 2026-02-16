@@ -14,6 +14,7 @@ import Input from "../../ui/Input";
 import CrewSelector from "./CrewSelector";
 import ReportImagePicker from "./ReportImagePicker";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import ChipSelector from "../../ui/ChipSelector";
 
 const WEATHER_OPTIONS = [
   "☀️ Clear",
@@ -24,91 +25,25 @@ const WEATHER_OPTIONS = [
   "🏡 Indoors",
 ];
 
-// ── Animated chip ─────────────────────────────────────────
-function WeatherChip({ option, isSelected, onPress }) {
-  const scale = useRef(new Animated.Value(1)).current;
-
-  const handlePress = () => {
-    Animated.sequence([
-      Animated.spring(scale, {
-        toValue: 0.9,
-        useNativeDriver: true,
-        speed: 50,
-      }),
-      Animated.spring(scale, {
-        toValue: 1,
-        useNativeDriver: true,
-        speed: 20,
-        bounciness: 12,
-      }),
-    ]).start();
-    onPress();
-  };
-
-  return (
-    <Animated.View style={{ transform: [{ scale }] }}>
-      <Pressable
-        onPress={handlePress}
-        className={`px-4 py-2 rounded-2xl border ${
-          isSelected ? "bg-primary border-primary" : "bg-surface border-border"
-        }`}
-      >
-        <Text
-          className={`text-sm font-semibold ${isSelected ? "text-white" : "text-title"}`}
-        >
-          {option}
-        </Text>
-      </Pressable>
-    </Animated.View>
-  );
-}
 
 // ── Scroll-peek hint on mount ─────────────────────────────
 function WeatherChipRow({ form, updateField }) {
-  const scrollRef = useRef(null);
-
-  useEffect(() => {
-    // Small delay so layout finishes before scrolling
-    const timeout = setTimeout(() => {
-      // Peek right to reveal hidden chips
-      scrollRef.current?.scrollTo({ x: 140, animated: true });
-
-      // Ease back after 600ms
-      setTimeout(() => {
-        scrollRef.current?.scrollTo({ x: 0, animated: true });
-      }, 600);
-    }, 900);
-
-    return () => clearTimeout(timeout);
-  }, []);
-
   return (
     <View className="mb-4">
       <Text className="text-muted text-sm font-semibold mb-2">Weather</Text>
-      <ScrollView
-        ref={scrollRef}
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        className="mb-2"
-      >
-        <View className="flex-row gap-2 pr-4">
-          {WEATHER_OPTIONS.map((option) => (
-            <WeatherChip
-              key={option}
-              option={option}
-              isSelected={form.weather === option}
-              onPress={() =>
-                updateField("weather", form.weather === option ? "" : option)
-              }
-            />
-          ))}
-        </View>
-      </ScrollView>
-      <Input
-        value={form.weather}
-        onChangeText={(v) => updateField("weather", v)}
-        placeholder='e.g. "Clear, 68°F"'
+      <ChipSelector
+        options={WEATHER_OPTIONS.map((o) => ({ id: o, label: o }))}
+        selected={form.weather}
+        onSelect={(id) => updateField("weather", id ?? "")}
+        peek={true}
       />
+      <View className="mt-2">
+        <Input
+          value={form.weather}
+          onChangeText={(v) => updateField("weather", v)}
+          placeholder='e.g. "Clear, 68°F"'
+        />
+      </View>
     </View>
   );
 }
