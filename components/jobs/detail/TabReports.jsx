@@ -23,24 +23,33 @@ export default function TabReports({ reports, jobId }) {
         />
       ) : (
         reports.map((report) => (
-          <Card key={report.id}>
-            <View className="flex-row justify-between items-start mb-2">
-              <Text className="text-title font-bold text-base">{report.date}</Text>
-              <Text className="text-muted text-xs">{report.submittedBy}</Text>
-            </View>
-            <Text className="text-body text-sm mb-2" numberOfLines={3}>
-              {report.workPerformed}
-            </Text>
-            <View className="flex-row gap-4 border-t border-border pt-2">
-              <Text className="text-muted text-xs">🌤 {report.weather}</Text>
-              <Text className="text-muted text-xs">👷 {report.crewOnSite}</Text>
-            </View>
-            {report.issues && report.issues !== "None" && (
-              <View className="bg-red-50 rounded-xl p-2 mt-2">
-                <Text className="text-red-600 text-xs">⚠️ {report.issues}</Text>
+          <TouchableOpacity
+            key={report.id}
+            onPress={() => router.push(`/job/report/${report.id}?jobId=${jobId}`)}
+            activeOpacity={0.7}
+          >
+            <Card>
+              <View className="flex-row justify-between items-start mb-2">
+                <Text className="text-title font-bold text-base">{report.date}</Text>
+                <Text className="text-muted text-xs">{report.submittedBy}</Text>
               </View>
-            )}
-          </Card>
+              <Text className="text-body text-sm mb-2" numberOfLines={3}>
+                {report.workPerformed}
+              </Text>
+              <View className="flex-row justify-between border-t border-border pt-2">
+                <View className="flex-row gap-4">
+                  <Text className="text-muted text-xs">🌤 {report.weather}</Text>
+                  <Text className="text-muted text-xs">👷 {report.crewOnSite}</Text>
+                </View>
+                <Text className="text-primary text-xs font-semibold">View →</Text>
+              </View>
+              {report.issues && report.issues !== "None" && (
+                <View className="bg-red-50 rounded-xl p-2 mt-2">
+                  <Text className="text-red-600 text-xs">⚠️ {report.issues}</Text>
+                </View>
+              )}
+            </Card>
+          </TouchableOpacity>
         ))
       )}
       <View style={{ height: 40 }} />
