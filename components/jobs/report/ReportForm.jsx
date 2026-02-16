@@ -13,6 +13,7 @@ import {
 import Input from "../../ui/Input";
 import CrewSelector from "./CrewSelector";
 import ReportImagePicker from "./ReportImagePicker";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 const WEATHER_OPTIONS = [
   "☀️ Clear",
@@ -29,8 +30,17 @@ function WeatherChip({ option, isSelected, onPress }) {
 
   const handlePress = () => {
     Animated.sequence([
-      Animated.spring(scale, { toValue: 0.9, useNativeDriver: true, speed: 50 }),
-      Animated.spring(scale, { toValue: 1, useNativeDriver: true, speed: 20, bounciness: 12 }),
+      Animated.spring(scale, {
+        toValue: 0.9,
+        useNativeDriver: true,
+        speed: 50,
+      }),
+      Animated.spring(scale, {
+        toValue: 1,
+        useNativeDriver: true,
+        speed: 20,
+        bounciness: 12,
+      }),
     ]).start();
     onPress();
   };
@@ -43,7 +53,9 @@ function WeatherChip({ option, isSelected, onPress }) {
           isSelected ? "bg-primary border-primary" : "bg-surface border-border"
         }`}
       >
-        <Text className={`text-sm font-semibold ${isSelected ? "text-white" : "text-title"}`}>
+        <Text
+          className={`text-sm font-semibold ${isSelected ? "text-white" : "text-title"}`}
+        >
           {option}
         </Text>
       </Pressable>
@@ -85,7 +97,9 @@ function WeatherChipRow({ form, updateField }) {
               key={option}
               option={option}
               isSelected={form.weather === option}
-              onPress={() => updateField("weather", form.weather === option ? "" : option)}
+              onPress={() =>
+                updateField("weather", form.weather === option ? "" : option)
+              }
             />
           ))}
         </View>
@@ -117,15 +131,18 @@ export default function ReportForm({
   handleSubmit,
 }) {
   return (
-    <KeyboardAvoidingView
-      className="flex-1"
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    <KeyboardAwareScrollView
+      enableOnAndroid
+      enableAutomaticScroll         
+      extraScrollHeight={70}
+      keyboardShouldPersistTaps="handled"
+      keyboardOpeningTime={0}
+      contentContainerStyle={{
+        paddingBottom: 10,
+        paddingHorizontal: 16,
+        flexGrow: 1,
+      }}
     >
-      <ScrollView
-        className="flex-1 px-4 pt-4"
-        showsVerticalScrollIndicator={false}
-        keyboardShouldPersistTaps="handled"
-      >
         {/* Date */}
         <Input
           label="Date"
@@ -153,6 +170,7 @@ export default function ReportForm({
           onChangeText={(v) => updateField("workPerformed", v)}
           placeholder="Describe the work completed today..."
           multiline
+          scrollEnabled={false}
         />
 
         {/* Issues */}
@@ -162,6 +180,7 @@ export default function ReportForm({
           onChangeText={(v) => updateField("issues", v)}
           placeholder="Any problems, delays, or items to flag..."
           multiline
+          scrollEnabled={false}
         />
 
         {/* Photos */}
@@ -201,7 +220,6 @@ export default function ReportForm({
         </TouchableOpacity>
 
         <View style={{ height: 40 }} />
-      </ScrollView>
-    </KeyboardAvoidingView>
+    </KeyboardAwareScrollView>
   );
 }
