@@ -15,7 +15,11 @@
     },
     "ios": {
       "supportsTablet": false,
-      "bundleIdentifier": "com.yourname.sitelog"
+      "bundleIdentifier": "com.yourname.sitelog",
+      "infoPlist": {
+      "NSCameraUsageDescription": "SiteLog needs camera access to take job site photos.",
+      "NSPhotoLibraryUsageDescription": "SiteLog needs photo access to attach images to reports."
+  }
     },
     "android": {
       "adaptiveIcon": {
@@ -23,7 +27,8 @@
         "backgroundColor": "#111827"
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.yourname.sitelog"
+      "package": "com.yourname.sitelog",
+      "permissions": ["CAMERA", "READ_EXTERNAL_STORAGE"]
     },
     "plugins": [
       "expo-router",

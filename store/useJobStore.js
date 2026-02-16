@@ -1,5 +1,6 @@
 import { create } from "zustand";
 
+
 const DEMO_JOBS = [
   {
     id: "demo-1",
