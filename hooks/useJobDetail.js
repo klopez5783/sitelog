@@ -1,12 +1,19 @@
-import { useState, useEffect } from "react";
-import { useRouter } from "expo-router";
+import { useState, useEffect, useCallback  } from "react";
+import { useFocusEffect } from "expo-router";
 import { Alert } from "react-native";
 import { useJobStore } from "../store/useJobStore";
-import { getJob, completeJob, updateJob, getReports, getNotes, getDocuments } from "../lib/firestore";
+import {
+  getJob,
+  completeJob,
+  updateJob,
+  getReports,
+  getNotes,
+  getDocuments,
+} from "../lib/firestore";
 
 export function useJobDetail(id) {
-  const router = useRouter();
-  const { companyId, isDemo, demoReports, demoNotes, jobs, setJobs } = useJobStore();
+  const { companyId, isDemo, demoReports, demoNotes, jobs, setJobs } =
+    useJobStore();
 
   const [job, setJob] = useState(null);
   const [reports, setReports] = useState([]);
@@ -70,7 +77,7 @@ export function useJobDetail(id) {
             }
           },
         },
-      ]
+      ],
     );
   };
 
@@ -105,13 +112,16 @@ export function useJobDetail(id) {
             }
           },
         },
-      ]
+      ],
     );
   };
 
-  useEffect(() => {
-    fetchJobData();
-  }, [id]);
+  useFocusEffect(
+    useCallback(() => {
+      setLoading(true);
+      fetchJobData();
+    }, [id]),
+  );
 
   return {
     job,
