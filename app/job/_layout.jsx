@@ -5,7 +5,6 @@ export default function JobLayout() {
     <Stack screenOptions={{ headerShown: false }}>
       <Stack.Screen name="create" />
       <Stack.Screen name="[id]" />
-      <Stack.Screen name="[id]/edit" />
     </Stack>
   );
 }
