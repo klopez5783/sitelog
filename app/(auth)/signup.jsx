@@ -33,41 +33,41 @@ export default function SignUpScreen() {
       .substring(0, 30);
   };
 
- const handleSignUp = async () => {
-  setError("");
+  const handleSignUp = async () => {
+    setError("");
 
-  if (!name || !companyName || !email || !password || !confirmPassword) {
-    setError("Please fill in all fields.");
-    return;
-  }
-  if (password.length < 6) {
-    setError("Password must be at least 6 characters.");
-    return;
-  }
-  if (password !== confirmPassword) {
-    setError("Passwords do not match.");
-    return;
-  }
-
-  setLoading(true);
-
-  try {
-    const userData = await signUp(name, companyName, email, password);
-    setUser(userData);
-    setCompanyId(userData.companyId);
-    router.replace("/(tabs)");
-  } catch (e) {
-    if (e.code === "auth/email-already-in-use") {
-      setError("An account with this email already exists.");
-    } else if (e.code === "auth/invalid-email") {
-      setError("Please enter a valid email address.");
-    } else {
-      setError("Something went wrong. Please try again.");
+    if (!name || !companyName || !email || !password || !confirmPassword) {
+      setError("Please fill in all fields.");
+      return;
     }
-  } finally {
-    setLoading(false);
-  }
-};
+    if (password.length < 6) {
+      setError("Password must be at least 6 characters.");
+      return;
+    }
+    if (password !== confirmPassword) {
+      setError("Passwords do not match.");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const userData = await signUp(name, companyName, email, password);
+      setUser(userData);
+      setCompanyId(userData.companyId);
+      router.replace("/(tabs)");
+    } catch (e) {
+      if (e.code === "auth/email-already-in-use") {
+        setError("An account with this email already exists.");
+      } else if (e.code === "auth/invalid-email") {
+        setError("Please enter a valid email address.");
+      } else {
+        setError("Something went wrong. Please try again.");
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <KeyboardAvoidingView
@@ -172,6 +172,19 @@ export default function SignUpScreen() {
               Already have an account?{" "}
               <Text className="text-primary font-semibold">Sign In</Text>
             </Text>
+          </TouchableOpacity>
+        </View>
+
+        <View className="flex-row justify-center items-center mt-4 px-8">
+          <Text className="text-muted text-xs text-center">
+            By signing up, you agree to our{" "}
+          </Text>
+          <TouchableOpacity
+            onPress={() =>
+              Linking.openURL("https://your-privacy-policy-url-here")
+            }
+          >
+            <Text className="text-primary text-xs">Privacy Policy</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>

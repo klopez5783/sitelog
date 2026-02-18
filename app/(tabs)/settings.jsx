@@ -1,6 +1,6 @@
 import { View, Text, TouchableOpacity, ScrollView, Alert } from "react-native";
 import { useRouter } from "expo-router";
-import { signOut } from "../../lib/auth";
+import { signOut } from "../../lib/useAuth";
 import { useJobStore } from "../../store/useJobStore";
 import Screen from "../../components/ui/Screen";
 
@@ -60,7 +60,12 @@ export default function Settings() {
           Legal
         </Text>
         <View className="bg-surface border border-border rounded-2xl mb-4">
-          <TouchableOpacity className="px-4 py-3 border-b border-border">
+          <TouchableOpacity
+            className="px-4 py-3 border-b border-border"
+            onPress={() =>
+              Linking.openURL("https://www.privacypolicies.com/live/87756c84-b39c-406b-b3c5-b0d0c122c852")
+            }
+          >
             <Text className="text-title text-sm">Privacy Policy</Text>
           </TouchableOpacity>
           <TouchableOpacity className="px-4 py-3">

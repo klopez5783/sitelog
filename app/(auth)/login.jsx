@@ -8,7 +8,7 @@ import {
   ScrollView,
 } from "react-native";
 import { useRouter } from "expo-router";
-import {useJobStore} from "../../store/useJobStore";
+import { useJobStore } from "../../store/useJobStore";
 import Input from "../../components/ui/Input";
 import Button from "../../components/ui/Button";
 import { signIn } from "../../lib/useAuth";
@@ -21,25 +21,25 @@ export default function LoginScreen() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
- const handleLogin = async () => {
-  if (!email || !password) {
-    setError("Please enter your email and password.");
-    return;
-  }
-  setLoading(true);
-  setError("");
-  try {
-    const userData = await signIn(email, password);
-    setUser(userData);
-    setCompanyId(userData.companyId);
-    router.replace("/(tabs)");
-  } catch (e) {
-    setError("Invalid email or password.");
-    console.log("Login error:", e);
-  } finally {
-    setLoading(false);
-  }
-};
+  const handleLogin = async () => {
+    if (!email || !password) {
+      setError("Please enter your email and password.");
+      return;
+    }
+    setLoading(true);
+    setError("");
+    try {
+      const userData = await signIn(email, password);
+      setUser(userData);
+      setCompanyId(userData.companyId);
+      router.replace("/(tabs)");
+    } catch (e) {
+      setError("Invalid email or password.");
+      console.log("Login error:", e);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleDemo = () => {
     enterDemo();
@@ -56,7 +56,6 @@ export default function LoginScreen() {
         keyboardShouldPersistTaps="handled"
       >
         <View className="flex-1 justify-center px-6 py-12">
-
           {/* Logo */}
           <View className="mb-10">
             <Text className="text-primary text-4xl font-bold">SiteLog</Text>
@@ -113,6 +112,15 @@ export default function LoginScreen() {
             </Text>
           </TouchableOpacity>
 
+          <View className="flex-row justify-center items-center mt-6">
+            <TouchableOpacity
+              onPress={() =>
+                Linking.openURL("https://www.privacypolicies.com/live/87756c84-b39c-406b-b3c5-b0d0c122c852")
+              }
+            >
+              <Text className="text-primary text-xs">Privacy Policy</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </ScrollView>
     </KeyboardAvoidingView>
