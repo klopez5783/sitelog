@@ -15,11 +15,12 @@
     },
     "ios": {
       "supportsTablet": false,
-      "bundleIdentifier": "com.yourname.sitelog",
+      "bundleIdentifier": "com.lopez.sitelog",
       "infoPlist": {
-      "NSCameraUsageDescription": "SiteLog needs camera access to take job site photos.",
-      "NSPhotoLibraryUsageDescription": "SiteLog needs photo access to attach images to reports."
-  }
+        "NSCameraUsageDescription": "SiteLog needs camera access to take job site photos.",
+        "NSPhotoLibraryUsageDescription": "SiteLog needs photo access to attach images to reports.",
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -27,14 +28,24 @@
         "backgroundColor": "#111827"
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.yourname.sitelog",
-      "permissions": ["CAMERA", "READ_EXTERNAL_STORAGE"]
+      "package": "com.lopez.sitelog",
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.RECORD_AUDIO"
+      ]
     },
     "plugins": [
       "expo-router",
       "expo-image-picker",
       "expo-document-picker",
       "@react-native-community/datetimepicker"
-    ]
+    ],
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "c24cfc8f-20d8-4641-aa20-f4c30b88f752"
+      }
+    }
   }
 }
