@@ -6,6 +6,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
+  Linking 
 } from "react-native";
 import { useRouter } from "expo-router";
 import { useJobStore } from "../../store/useJobStore";
@@ -33,6 +34,24 @@ export default function SignUpScreen() {
       .substring(0, 30);
   };
 
+  const getErrorMessage = (code) => {
+    switch (code) {
+      case "auth/user-not-found":
+      case "auth/wrong-password":
+        return "Invalid email or password";
+      case "auth/email-already-in-use":
+        return "An account with this email already exists";
+      case "auth/invalid-email":
+        return "Please enter a valid email address";
+      case "auth/weak-password":
+        return "Password must be at least 6 characters";
+      case "auth/network-request-failed":
+        return "Network error. Check your connection.";
+      default:
+        return "Something went wrong. Please try again.";
+    }
+  };
+
   const handleSignUp = async () => {
     setError("");
 
@@ -57,13 +76,7 @@ export default function SignUpScreen() {
       setCompanyId(userData.companyId);
       router.replace("/(tabs)");
     } catch (e) {
-      if (e.code === "auth/email-already-in-use") {
-        setError("An account with this email already exists.");
-      } else if (e.code === "auth/invalid-email") {
-        setError("Please enter a valid email address.");
-      } else {
-        setError("Something went wrong. Please try again.");
-      }
+      setError(getErrorMessage(e.code));
     } finally {
       setLoading(false);
     }
@@ -181,7 +194,7 @@ export default function SignUpScreen() {
           </Text>
           <TouchableOpacity
             onPress={() =>
-              Linking.openURL("https://your-privacy-policy-url-here")
+              Linking.openURL("https://www.privacypolicies.com/live/87756c84-b39c-406b-b3c5-b0d0c122c852")
             }
           >
             <Text className="text-primary text-xs">Privacy Policy</Text>

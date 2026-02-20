@@ -11,15 +11,16 @@ export default function Input({
   multiline = false,
   returnKeyType = "done",
   onSubmitEditing,
-  scrollEnabled
+  scrollEnabled,
+  subLabel,
 }) {
   return (
     <View className="mb-4">
-      {label ? (
-        <Text className="text-body text-sm font-semibold mb-1 ml-1">
-          {label}
-        </Text>
-      ) : null}
+        {label ? (
+          <Text className="text-body text-sm font-semibold mb-1 ml-1">
+            {label}
+          </Text>
+        ) : null}
       <TextInput
         className="bg-surface border justify-center-safe border-border rounded-2xl px-4 text-title text-base"
         placeholder={placeholder}
@@ -33,7 +34,7 @@ export default function Input({
         returnKeyType={multiline ? "default" : returnKeyType}
         onSubmitEditing={onSubmitEditing}
         blurOnSubmit={!multiline}
-        scrollEnabled={scrollEnabled} 
+        scrollEnabled={scrollEnabled}
         style={{
           height: multiline ? undefined : 50,
           minHeight: multiline ? 100 : undefined,

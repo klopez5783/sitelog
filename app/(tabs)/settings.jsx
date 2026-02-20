@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, ScrollView, Alert } from "react-native";
+import { View, Text, TouchableOpacity, ScrollView, Alert, Linking } from "react-native";
 import { useRouter } from "expo-router";
 import { signOut } from "../../lib/useAuth";
 import { useJobStore } from "../../store/useJobStore";

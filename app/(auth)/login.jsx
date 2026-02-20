@@ -6,6 +6,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
+  Linking,
 } from "react-native";
 import { useRouter } from "expo-router";
 import { useJobStore } from "../../store/useJobStore";
@@ -21,6 +22,24 @@ export default function LoginScreen() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
+  const getErrorMessage = (code) => {
+    switch (code) {
+      case "auth/user-not-found":
+      case "auth/wrong-password":
+        return "Invalid email or password";
+      case "auth/email-already-in-use":
+        return "An account with this email already exists";
+      case "auth/invalid-email":
+        return "Please enter a valid email address";
+      case "auth/weak-password":
+        return "Password must be at least 6 characters";
+      case "auth/network-request-failed":
+        return "Network error. Check your connection.";
+      default:
+        return "Something went wrong. Please try again.";
+    }
+  };
+
   const handleLogin = async () => {
     if (!email || !password) {
       setError("Please enter your email and password.");
@@ -34,7 +53,7 @@ export default function LoginScreen() {
       setCompanyId(userData.companyId);
       router.replace("/(tabs)");
     } catch (e) {
-      setError("Invalid email or password.");
+      setError(getErrorMessage(e.code));
       console.log("Login error:", e);
     } finally {
       setLoading(false);
@@ -63,7 +82,6 @@ export default function LoginScreen() {
               Job documentation for the field
             </Text>
           </View>
-
           {/* Fields */}
           <Input
             label="Email"
@@ -80,27 +98,25 @@ export default function LoginScreen() {
             placeholder="Enter your password"
             secureTextEntry
           />
-
           {error ? (
             <Text className="text-danger text-sm mb-3">{error}</Text>
           ) : null}
-
           {/* Sign In */}
           <Button label="Sign In" onPress={handleLogin} loading={loading} />
-
+          <TouchableOpacity className="mx-auto mt-5" onPress={() => router.push("/forgot-password")}>
+            <Text className="text-primary text-sm">Forgot Password?</Text>
+          </TouchableOpacity>
           {/* Divider */}
           <View className="flex-row items-center my-5">
             <View className="flex-1 h-px bg-border" />
             <Text className="text-muted text-sm mx-4">or</Text>
             <View className="flex-1 h-px bg-border" />
           </View>
-
           {/* Demo */}
           <Button label="Try Demo" onPress={handleDemo} variant="outline" />
           <Text className="text-muted text-xs text-center mt-2">
             Explore with sample jobs — no account needed
           </Text>
-
           {/* Sign Up */}
           <TouchableOpacity
             className="items-center mt-8"
@@ -112,15 +128,6 @@ export default function LoginScreen() {
             </Text>
           </TouchableOpacity>
 
-          <View className="flex-row justify-center items-center mt-6">
-            <TouchableOpacity
-              onPress={() =>
-                Linking.openURL("https://www.privacypolicies.com/live/87756c84-b39c-406b-b3c5-b0d0c122c852")
-              }
-            >
-              <Text className="text-primary text-xs">Privacy Policy</Text>
-            </TouchableOpacity>
-          </View>
         </View>
       </ScrollView>
     </KeyboardAvoidingView>
